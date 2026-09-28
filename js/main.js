@@ -160,8 +160,8 @@ function boot() {
     setTimeout(() => ($('#start').hidden = true), 600);
     updatePill();
   }
+  // No automatic fullscreen: it would hide the browser's camera permission prompt.
   $('#start-webcam').addEventListener('click', () => {
-    enterFullscreen(); // must run inside the click
     dismissStart();
     tracker.start();
   });
