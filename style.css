@@ -1,0 +1,279 @@
+:root {
+  --bg: #000;
+  --panel: rgba(14, 17, 28, 0.86);
+  --line: rgba(255, 255, 255, 0.1);
+  --text: #e9ecf5;
+  --muted: #8d95ad;
+  --accent: #ff3b3b;
+  --warn: #ffb020;
+  --ok: #3ddc97;
+  --radius: 14px;
+  --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: inherit; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 8px 14px;
+  border-radius: 10px;
+  transition: background 0.15s, transform 0.15s;
+}
+.btn:hover { background: rgba(255, 255, 255, 0.12); }
+.btn:active { transform: scale(0.98); }
+.btn.primary {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: transparent;
+  color: #0a0b10;
+  font-weight: 600;
+}
+.btn.primary:hover { background: #fff; }
+.btn.big { padding: 14px 22px; font-size: 16px; border-radius: 12px; }
+.btn.ghost { background: transparent; border-color: transparent; color: rgba(255, 255, 255, 0.8); }
+.btn.ghost:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+/* ---------- Overlays ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 20;
+  transition: opacity 0.5s ease;
+}
+.overlay.gone { opacity: 0; pointer-events: none; }
+.overlay[hidden] { display: none; }
+
+/* Translucent glass: the scene shows through, blurred. */
+.glass {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 20px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+}
+
+.card {
+  max-width: 420px;
+  width: 100%;
+  padding: 36px 32px 24px;
+  border-radius: 28px;
+  text-align: center;
+}
+.card h1 { margin: 0 0 8px; font-size: 40px; font-weight: 650; letter-spacing: -0.025em; line-height: 1.05; }
+.lede { margin: 0 auto 28px; max-width: 32ch; color: rgba(255, 255, 255, 0.72); font-size: 15px; }
+.actions { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.btn.big { border-radius: 999px; }
+.glass .btn.ghost { border-radius: 999px; padding: 10px 14px; }
+.credit { margin: 22px 0 0; font-size: 12px; color: rgba(255, 255, 255, 0.45); }
+.credit a { color: rgba(255, 255, 255, 0.65); text-decoration: none; }
+.credit a:hover { color: #fff; }
+
+/* ---------- Tracking Lost pill ---------- */
+#pill {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translate(-50%, -140%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 10px 8px 14px;
+  border-radius: 999px;
+  /* Same glass as the start card and corner icons. */
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  font-size: 13px;
+  z-index: 15;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 0.35s;
+  opacity: 0;
+}
+#pill.show { transform: translate(-50%, 0); opacity: 1; }
+.pill-icon {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--warn);
+  box-shadow: 0 0 10px var(--warn);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+#pill.busy .pill-icon {
+  background: none;
+  box-shadow: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--muted);
+  border-top-color: var(--text);
+  animation: spin 0.8s linear infinite;
+}
+.pill-action {
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 600;
+}
+.pill-action:hover { background: rgba(255, 255, 255, 0.2); }
+@keyframes pulse { 50% { opacity: 0.35; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Corner HUD ---------- */
+#hud {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 8px;
+  z-index: 16;
+}
+.icon-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.icon-btn:hover { background: #1b2032; }
+.icon-btn.glass {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.icon-btn.glass:hover { background: rgba(255, 255, 255, 0.14); }
+.icon-btn.active { border-color: rgba(255, 255, 255, 0.45); }
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Unrecognized Device: nudge the viewer to check settings. */
+#btn-settings.badge::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--warn);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 10px var(--warn);
+}
+
+/* ---------- Settings panel ---------- */
+#settings {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(400px, 100vw);
+  padding: 18px 20px 24px;
+  overflow-y: auto;
+  /* Same glass as the start card. */
+  background: rgba(255, 255, 255, 0.07);
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.1), -20px 0 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  z-index: 18;
+  transform: translateX(105%);
+  transition: transform 0.3s ease;
+}
+#settings.open { transform: none; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.panel-head h2 { margin: 0; font-size: 18px; }
+.panel-head .icon-btn { width: 32px; height: 32px; }
+.device-status {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+}
+.device-status.ok { border-color: rgba(61, 220, 151, 0.35); background: rgba(61, 220, 151, 0.07); }
+.device-status.warn { border-color: rgba(255, 176, 32, 0.5); background: rgba(255, 176, 32, 0.08); }
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 0 0 14px;
+  padding: 6px 14px 14px;
+}
+legend { padding: 0 6px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.field { display: block; padding: 8px 0 4px; }
+.field-label { display: block; font-size: 13px; }
+.field-label small { display: block; color: var(--muted); font-size: 11.5px; }
+.field-input { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.field-input input[type="range"] { flex: 1; accent-color: var(--accent); min-width: 0; }
+.field-input input[type="number"] {
+  width: 72px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font: 12px var(--mono);
+}
+.unit { width: 24px; font-size: 12px; color: var(--muted); }
+.fine-print { font-size: 11.5px; color: var(--muted); margin: 6px 0 0; }
+
+/* ---------- Debug overlay ---------- */
+#debug {
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  width: 280px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 14;
+}
+#debug canvas { display: block; width: 256px; height: 144px; border-radius: 8px; background: #000; }
+#debug pre { margin: 10px 0 0; font: 11.5px/1.55 var(--mono); white-space: pre-wrap; color: #cdd3e4; }

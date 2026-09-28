@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Window VR</title>
+  <meta name="description" content="Head-tracked 3D through your laptop webcam: your screen becomes a window. After Johnny Chung Lee's Wii Remote demo.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <!-- Start screen -->
+  <section id="start" class="overlay">
+    <div class="card glass">
+      <h1>Window VR</h1>
+      <p class="lede">Move your head to look into the screen. Works best with one eye closed.</p>
+      <div class="actions">
+        <button id="start-webcam" class="btn primary big">Start</button>
+      </div>
+      <p class="credit">Video stays on your device. After <a href="https://www.youtube.com/watch?v=Jd3-eiid-Uw" target="_blank" rel="noopener">Johnny Chung Lee</a>, 2007.</p>
+    </div>
+  </section>
+
+  <!-- Phones and tablets -->
+  <section id="handheld" class="overlay" hidden>
+    <div class="card glass">
+      <h1>Window VR</h1>
+      <p class="lede">This demo turns a laptop or desktop screen into a window using the webcam. Please open it on a computer.</p>
+    </div>
+  </section>
+
+  <!-- Tracking Lost indicator -->
+  <div id="pill" role="status" aria-live="polite">
+    <span class="pill-icon" aria-hidden="true"></span>
+    <span class="pill-text"></span>
+    <button class="pill-action" hidden></button>
+  </div>
+
+  <!-- Corner controls -->
+  <nav id="hud" aria-label="Controls">
+    <button id="btn-debug" class="icon-btn glass" title="Debug (D)" aria-label="Toggle debug view">
+      <svg viewBox="0 0 24 24"><path d="m8 2 1.88 1.88M14.12 3.88 16 2M9 7.13v-1a3 3 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6Zm0 0v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5M6 13H2M3 21c0-2.1 1.7-3.9 3.8-4M20.97 5c0 2.1-1.6 3.8-3.5 4M22 13h-4M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
+    </button>
+    <button id="btn-fullscreen" class="icon-btn glass" title="Fullscreen (F)" aria-label="Toggle fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button id="btn-settings" class="icon-btn glass" title="Settings (S)" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+    </button>
+  </nav>
+
+  <aside id="settings" aria-hidden="true"></aside>
+
+  <!-- Debug overlay -->
+  <div id="debug" hidden>
+    <canvas id="debug-video" width="256" height="144"></canvas>
+    <pre id="debug-text"></pre>
+    <p class="fine-print">Processed on-device · D to hide</p>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
